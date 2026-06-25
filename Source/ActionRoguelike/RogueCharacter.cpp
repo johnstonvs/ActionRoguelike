@@ -4,6 +4,7 @@
 #include "RogueCharacter.h"
 
 #include "EnhancedInputComponent.h"
+#include "TimerManager.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
@@ -72,6 +73,18 @@ void ARogueCharacter::Look(const FInputActionInstance& InValue)
 void ARogueCharacter::PrimaryAttack()
 {
 	
+	PlayAnimMontage(AttackMontage);
+	
+	FTimerHandle AttackTimerHandle;
+	
+	const float AttackDelayTime = 0.2f;
+	
+	GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ARogueCharacter::AttackTimerElapsed, AttackDelayTime);
+	
+}
+
+void ARogueCharacter::AttackTimerElapsed()
+{
 	FVector SpawnLocation = GetMesh()->GetSocketLocation(MuzzleSocketName);
 	FRotator SpawnRotation = GetControlRotation();
 	FActorSpawnParameters SpawnParams;
@@ -79,7 +92,6 @@ void ARogueCharacter::PrimaryAttack()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnLocation, SpawnRotation, SpawnParams);
-	
 }
 
 // Called every frame
