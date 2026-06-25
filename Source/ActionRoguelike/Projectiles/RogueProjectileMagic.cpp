@@ -4,8 +4,12 @@
 #include "RogueProjectileMagic.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/DamageType.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ARogueProjectileMagic::ARogueProjectileMagic()
@@ -25,4 +29,22 @@ ARogueProjectileMagic::ARogueProjectileMagic()
 	
 }
 
+void ARogueProjectileMagic::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	SphereComponent->OnComponentHit.AddDynamic(this, &ARogueProjectileMagic::OnActorHit);
+}
 
+void ARogueProjectileMagic::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+                                       FVector NormalImpulse, const FHitResult& Hit)
+{
+	// TODO: Create our own damage type
+	TSubclassOf<UDamageType> DmgTypeClass = UDamageType::StaticClass();
+	
+	UGameplayStatics::ApplyDamage(OtherActor, 10.f, GetInstigatorController(), this, DmgTypeClass);
+	
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ExplosionEffect, GetActorLocation());
+	
+	Destroy();
+}
