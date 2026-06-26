@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "RogueProjectileMagic.generated.h"
 
+class UAudioComponent;
 class UNiagaraSystem;
 class UNiagaraComponent;
 class UProjectileMovementComponent;
@@ -18,14 +19,23 @@ class ACTIONROGUELIKE_API ARogueProjectileMagic : public AActor
 
 protected:
 	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	TSubclassOf<UDamageType> DmgTypeClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Effects")
 	TObjectPtr<UNiagaraSystem> ExplosionEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Sound")
+	TObjectPtr<USoundBase> ExplosionSound;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Components")
 	TObjectPtr<USphereComponent> SphereComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Components")
 	TObjectPtr<UNiagaraComponent> LoopedNiagaraComponent;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Components")
+	TObjectPtr<UAudioComponent>  LoopedAudioComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Components")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
