@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core/RogueInteractionInterface.h"
 #include "GameFramework/Actor.h"
 #include "RogueItemChest.generated.h"
 
 
 
 
-UCLASS()
-class ACTIONROGUELIKE_API ARogueItemChest : public AActor
+UCLASS(Abstract)
+class ACTIONROGUELIKE_API ARogueItemChest : public AActor, public IRogueInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -30,10 +31,10 @@ protected:
 	float AnimationTargetPitch = 120.0f;
 	
 	float CurrentAnimationPitch = 0.0f;
-	
-	virtual void BeginPlay() override;
 
 public:
+	
+	virtual void Interact() override;
 	
 	virtual void Tick(float DeltaTime) override;
 
