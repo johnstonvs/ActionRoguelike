@@ -21,7 +21,7 @@ ARogueItemChest::ARogueItemChest()
 }
 
 
-void ARogueItemChest::Interact()
+void ARogueItemChest::Interact_Implementation()
 {
 	// Play animation
 	SetActorTickEnabled(true);
@@ -36,7 +36,10 @@ void ARogueItemChest::Tick(float DeltaTime)
 	
 	if (FMath::IsNearlyEqual(CurrentAnimationPitch, AnimationTargetPitch))
 	{
+		// Animation complete
 		SetActorTickEnabled(false);
+		
+		ChestAnimationComplete();
 	}
 }
 

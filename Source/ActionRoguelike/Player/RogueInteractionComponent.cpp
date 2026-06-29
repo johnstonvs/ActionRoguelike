@@ -17,7 +17,19 @@ URogueInteractionComponent::URogueInteractionComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-// Called every frame
+
+void URogueInteractionComponent::Interact()
+{
+	/*IRogueInteractionInterface* InteractInterface = Cast<IRogueInteractionInterface>(SelectedActor);
+	if (InteractInterface)
+	{
+		InteractInterface->Interact();
+	}*/
+	
+	IRogueInteractionInterface::Execute_Interact(SelectedActor);
+}
+
+
 void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -63,16 +75,6 @@ void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	}
 		
 	DrawDebugSphere(GetWorld(), Center, InteractionRadius, 32, FColor::White);
-}
-
-void URogueInteractionComponent::Interact()
-{
-	
-	IRogueInteractionInterface* InteractInterface = Cast<IRogueInteractionInterface>(SelectedActor);
-	if (InteractInterface)
-	{
-		InteractInterface->Interact();
-	}
 }
 
 
