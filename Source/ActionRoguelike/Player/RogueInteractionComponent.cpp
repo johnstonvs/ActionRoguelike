@@ -26,6 +26,7 @@ void URogueInteractionComponent::Interact()
 		InteractInterface->Interact();
 	}*/
 	
+	if (!SelectedActor) return;
 	IRogueInteractionInterface::Execute_Interact(SelectedActor);
 }
 

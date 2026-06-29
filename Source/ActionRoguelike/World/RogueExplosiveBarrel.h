@@ -45,6 +45,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Components")
 	TObjectPtr<URadialForceComponent> RadialForceComponent;
 
+	UFUNCTION(BlueprintCallable)
 	void Explode();
 	
 	bool bExploded;
