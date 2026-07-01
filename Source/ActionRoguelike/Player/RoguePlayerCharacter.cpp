@@ -77,15 +77,14 @@ void ARoguePlayerCharacter::PrimaryAttack()
 	
 	PlayAnimMontage(AttackMontage);
 	
-	FTimerHandle AttackTimerHandle;
-	const float AttackDelayTime = 0.2f;
 	
 	UNiagaraFunctionLibrary::SpawnSystemAttached(CastingEffect, GetMesh(), MuzzleSocketName, 
 		FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::Type::SnapToTarget, true);
 	
 	UGameplayStatics::PlaySound2D(this, CastingSound);
 	
-	
+	FTimerHandle AttackTimerHandle;
+	const float AttackDelayTime = 0.2f;
 	GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ARoguePlayerCharacter::AttackTimerElapsed, AttackDelayTime);
 	
 }

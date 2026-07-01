@@ -32,8 +32,7 @@ void ARogueProjectileMagic::PostInitializeComponents()
 	SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
 }
 
-void ARogueProjectileMagic::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
-                                       FVector NormalImpulse, const FHitResult& Hit)
+void ARogueProjectileMagic::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	
 	FVector HitFromDirection = GetActorRotation().Vector();
