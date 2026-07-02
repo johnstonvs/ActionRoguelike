@@ -5,18 +5,20 @@
 
 #include "NiagaraFunctionLibrary.h"
 #include "TimerManager.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 
 
 ARogueProjectileBlackhole::ARogueProjectileBlackhole()
 {
-	SphereComponent->SetSphereRadius(50.f);
+	
 	SphereComponent->SetCollisionProfileName("ProjectileOverlap");
 	
-	ProjectileMovementComponent->InitialSpeed = 500.f;
+	ProjectileMovementComponent->InitialSpeed = 550.f;
 	
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForceComp"));
 	RadialForceComponent->SetupAttachment(SphereComponent);
@@ -37,6 +39,8 @@ void ARogueProjectileBlackhole::PostInitializeComponents()
 	UNiagaraFunctionLibrary::SpawnSystemAttached(BlackholeEffect, SphereComponent, NAME_None,
 		FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::Type::SnapToTarget, true);
 	
+	ActiveBlackholeSoundComp = UGameplayStatics::SpawnSoundAttached(BlackholeSound, SphereComponent);
+	
 	// Destroy self after 5 seconds
 	FTimerHandle DestroyTimerHandle;
 	const float DestroyDelayTime = 5.0f;
@@ -56,6 +60,7 @@ void ARogueProjectileBlackhole::OnActorOverlap(UPrimitiveComponent* OverlappedCo
 
 void ARogueProjectileBlackhole::DestroyTimerElapsed()
 {
+	ActiveBlackholeSoundComp->Deactivate();
 	Destroy();
 }
 

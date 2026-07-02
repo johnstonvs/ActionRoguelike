@@ -6,8 +6,8 @@
 #include "GameFramework/Character.h"
 #include "RoguePlayerCharacter.generated.h"
 
+class ARogueProjectile;
 class UNiagaraSystem;
-class ARogueProjectileMagic;
 struct FInputActionInstance;
 struct FInputActionValue;
 class UInputAction;
@@ -25,21 +25,27 @@ public:
 	ARoguePlayerCharacter();
 
 protected:
-	
-	UPROPERTY(EditDefaultsOnly, Category="PrimaryAttack")
-	TSubclassOf<ARogueProjectileMagic> ProjectileClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category="PrimaryAttack")
+		
+	UPROPERTY(EditDefaultsOnly, Category="Attack")
 	TObjectPtr<UNiagaraSystem> CastingEffect;
 	
-	UPROPERTY(EditDefaultsOnly, Category="PrimaryAttack")
+	UPROPERTY(EditDefaultsOnly, Category="Attack")
 	TObjectPtr<USoundBase> CastingSound;
 	
-	UPROPERTY(VisibleAnywhere, Category="PrimaryAttack")
+	UPROPERTY(VisibleAnywhere, Category="Attack")
 	FName MuzzleSocketName;
 	
-	UPROPERTY(EditDefaultsOnly, Category="PrimaryAttack")
+	UPROPERTY(EditDefaultsOnly, Category="Attack")
 	TObjectPtr<UAnimMontage> AttackMontage;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attack|Magic")
+	TSubclassOf<ARogueProjectile> MagicProjectileClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attack|Blackhole")
+	TSubclassOf<ARogueProjectile> BlackholeProjectileClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attack|Blink")
+	TSubclassOf<ARogueProjectile> BlinkProjectileClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Move;
@@ -52,6 +58,12 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_PrimaryAttack;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_BlackholeAttack;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_Blink;
 	
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UCameraComponent> CameraComponent;
@@ -69,7 +81,15 @@ protected:
 	
 	void PrimaryAttack();
 	
-	void AttackTimerElapsed();
+	void PrimaryAttackTimerElapsed();
+
+	void BlackholeAttack();
+	
+	void BlackholeAttackTimerElapsed();
+	
+	void Blink();
+	
+	void BlinkTimerElapsed();
 
 public:	
 	// Called every frame

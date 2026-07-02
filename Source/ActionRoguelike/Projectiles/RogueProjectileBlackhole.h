@@ -6,6 +6,7 @@
 #include "RogueProjectile.h"
 #include "RogueProjectileBlackhole.generated.h"
 
+class UAudioComponent;
 class URadialForceComponent;
 class UNiagaraSystem;
 
@@ -16,17 +17,23 @@ class ACTIONROGUELIKE_API ARogueProjectileBlackhole : public ARogueProjectile
 	
 protected:
 	
-	UPROPERTY(EditDefaultsOnly, Category="Blackhole")
+	UPROPERTY(EditDefaultsOnly, Category="Effects")
 	TObjectPtr<UNiagaraSystem> BlackholeEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Sound")
+	TObjectPtr<USoundBase> BlackholeSound;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Component")
 	TObjectPtr<URadialForceComponent> RadialForceComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Blackhole")
-	float BlackholeRadius = 500.f;
+	float BlackholeRadius = 600.f;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Blackhole")
 	float BlackholeForce = -700000.f;
+	
+	UPROPERTY()
+	TObjectPtr<UAudioComponent> ActiveBlackholeSoundComp = nullptr;
 	
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
