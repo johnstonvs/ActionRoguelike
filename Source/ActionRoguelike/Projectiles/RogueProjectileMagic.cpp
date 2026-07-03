@@ -18,9 +18,8 @@ ARogueProjectileMagic::ARogueProjectileMagic()
 void ARogueProjectileMagic::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	FVector HitFromDirection = GetActorRotation().Vector();
-	
 	UGameplayStatics::ApplyPointDamage(OtherActor, 10.f, HitFromDirection, Hit, GetInstigatorController(), this, DmgTypeClass);
 	
-	// Keep base implementation
+	// Keep base implementation, damage applied before projectile is destroyed
 	Super::OnActorHit(HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
 }

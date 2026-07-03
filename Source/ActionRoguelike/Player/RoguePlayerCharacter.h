@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "RoguePlayerCharacter.generated.h"
 
+class URogueActionSystemComponent;
 class ARogueProjectile;
 class UNiagaraSystem;
 struct FInputActionInstance;
@@ -21,8 +22,10 @@ class ACTIONROGUELIKE_API ARoguePlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	
 	ARoguePlayerCharacter();
-
+	
+	
 protected:
 		
 	UPROPERTY(EditDefaultsOnly, Category="Attack")
@@ -70,9 +73,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 	
-	
-	virtual void BeginPlay() override;
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<URogueActionSystemComponent> ActionSystemComponent;
+
 	
 	void Move(const FInputActionValue& InValue);
 	
@@ -84,6 +87,11 @@ protected:
 	
 	
 public:	
+	
+	virtual void BeginPlay() override;
+	
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
