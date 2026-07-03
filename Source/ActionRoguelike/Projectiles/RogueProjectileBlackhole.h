@@ -26,19 +26,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Component")
 	TObjectPtr<URadialForceComponent> RadialForceComponent;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Blackhole")
-	float BlackholeRadius = 600.f;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Blackhole")
-	float BlackholeForce = -700000.f;
-	
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> ActiveBlackholeSoundComp = nullptr;
 	
 	UFUNCTION()
-	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	void OnSphereOverlappedActor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	
-	void DestroyTimerElapsed();
+	UFUNCTION()
+	void HandleDestroyed(AActor* DestroyedActor);
 
 public:
 	

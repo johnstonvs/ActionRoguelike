@@ -6,43 +6,31 @@
 #include "RogueProjectile.h"
 #include "RogueProjectileBlink.generated.h"
 
-class UAudioComponent;
-class UNiagaraComponent;
-class UNiagaraSystem;
-
 UCLASS(Abstract)
 class ACTIONROGUELIKE_API ARogueProjectileBlink : public ARogueProjectile
 {
 	GENERATED_BODY()
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly, Category="Effects")
-	TObjectPtr<UNiagaraSystem> ExplosionEffect;
-		
-	UPROPERTY(EditDefaultsOnly, Category="Sound")
-	TObjectPtr<USoundBase> ExplosionSound;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Components")
-	TObjectPtr<UNiagaraComponent> LoopedNiagaraComponent;
+	// Re-usable handle for the initial explosion delay and the blink
+	FTimerHandle BlinkTimerHandle;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Components")
-	TObjectPtr<UAudioComponent>  LoopedAudioComponent;
+	UPROPERTY(EditDefaultsOnly, Category="Projectile")
+	float ExplosionDelay = 0.2f;;
 	
-	FTimerHandle ExplodeTimerHandle;
+	UPROPERTY(EditDefaultsOnly, Category="Projectile")
+	float BlinkDelay = 0.2f;
 	
-	UFUNCTION()
-	void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 	
 	void Explode();
 	
 	void Teleport();
 	
-	void DestroyTimerElapsed();
-	
 public:
 	
-	virtual void PostInitializeComponents() override;
-	
 	ARogueProjectileBlink();
+	
+	virtual void BeginPlay() override;
 };

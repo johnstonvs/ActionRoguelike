@@ -21,7 +21,6 @@ class ACTIONROGUELIKE_API ARoguePlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ARoguePlayerCharacter();
 
 protected:
@@ -79,23 +78,14 @@ protected:
 	
 	void Look(const FInputActionInstance& InValue);
 	
-	void PrimaryAttack();
+	void StartProjectileAttack(TSubclassOf<ARogueProjectile> ProjectileClass);
 	
-	void PrimaryAttackTimerElapsed();
-
-	void BlackholeAttack();
+	void AttackTimerElapsed(TSubclassOf<ARogueProjectile> ProjectileClass);
 	
-	void BlackholeAttackTimerElapsed();
 	
-	void Blink();
-	
-	void BlinkTimerElapsed();
-
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };

@@ -15,24 +15,30 @@
 
 ARogueProjectileBlackhole::ARogueProjectileBlackhole()
 {
-	
+	// Set profile to go through objects and overlap
 	SphereComponent->SetCollisionProfileName("ProjectileOverlap");
+	SphereComponent->SetSphereRadius(20.f);
 	
-	ProjectileMovementComponent->InitialSpeed = 550.f;
+	
+	// Slow
+	ProjectileMovementComponent->InitialSpeed = 500.f;
 	
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForceComp"));
 	RadialForceComponent->SetupAttachment(SphereComponent);
-	RadialForceComponent->bIgnoreOwningActor = true;
-	RadialForceComponent->Radius = BlackholeRadius;
-	RadialForceComponent->ForceStrength = BlackholeForce;
-	RadialForceComponent->Activate();
+	RadialForceComponent->Radius = 1200.f;
+	RadialForceComponent->ForceStrength = -700000.f;
+	// Avoid sucking players into the blackhole by removing pawn actors from the collision channel
+	RadialForceComponent->RemoveObjectTypeToAffect(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+	
+	// Despawn after 5 seconds
+	InitialLifeSpan = 5.f;
 }
 
 void ARogueProjectileBlackhole::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ARogueProjectileBlackhole::OnActorOverlap);
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereOverlappedActor);
 	
 	SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
 	
@@ -41,27 +47,25 @@ void ARogueProjectileBlackhole::PostInitializeComponents()
 	
 	ActiveBlackholeSoundComp = UGameplayStatics::SpawnSoundAttached(BlackholeSound, SphereComponent);
 	
-	// Destroy self after 5 seconds
-	FTimerHandle DestroyTimerHandle;
-	const float DestroyDelayTime = 5.0f;
-	GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &ARogueProjectileBlackhole::DestroyTimerElapsed, DestroyDelayTime);
+	// Deactivate sounds before getting destroyed
+	OnDestroyed.AddDynamic(this, &ThisClass::HandleDestroyed);
 	
 }
 
-void ARogueProjectileBlackhole::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ARogueProjectileBlackhole::OnSphereOverlappedActor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->GetRootComponent()->IsSimulatingPhysics())
 	{
 		OtherActor->Destroy();
 	}
-	
 }
 
-void ARogueProjectileBlackhole::DestroyTimerElapsed()
+void ARogueProjectileBlackhole::HandleDestroyed(AActor* DestroyedActor)
 {
-	ActiveBlackholeSoundComp->Deactivate();
-	Destroy();
+	if (ActiveBlackholeSoundComp)
+	{
+		ActiveBlackholeSoundComp->Deactivate();
+	}
 }
-
 
