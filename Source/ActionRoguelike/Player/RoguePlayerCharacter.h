@@ -40,6 +40,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Attack")
 	TObjectPtr<UAnimMontage> AttackMontage;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Death")
+	TObjectPtr<UAnimMontage> DeathMontage;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Attack|Magic")
 	TSubclassOf<ARogueProjectile> MagicProjectileClass;
 	
@@ -85,14 +88,14 @@ protected:
 	
 	void AttackTimerElapsed(TSubclassOf<ARogueProjectile> ProjectileClass);
 	
+	UFUNCTION()
+	void OnHealthChanged(float NewHealth, float OldHealth);
 	
 public:	
 	
-	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 	
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-	
-	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
