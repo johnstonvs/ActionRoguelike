@@ -12,7 +12,10 @@ struct FRogueAttributeSet
 	GENERATED_BODY()
 	
 	FRogueAttributeSet()
-		: Health(100.f) {}
+		: MaxHealth(100.f), Health(100.f) {}
+	
+	UPROPERTY(BlueprintReadWrite)
+	float MaxHealth;
 	
 	UPROPERTY(BlueprintReadOnly)
 	float Health;
