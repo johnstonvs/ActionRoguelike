@@ -11,8 +11,9 @@ struct FRogueAttributeSet
 {
 	GENERATED_BODY()
 	
-	FRogueAttributeSet()
-		: MaxHealth(100.f), Health(100.f) {}
+	FRogueAttributeSet() :
+	MaxHealth(100.f),
+	Health(100.f) {}
 	
 	UPROPERTY(BlueprintReadWrite)
 	float MaxHealth;
@@ -36,6 +37,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
 
+	UFUNCTION()
+	bool IsFullHealth();
 	
 protected:
 	

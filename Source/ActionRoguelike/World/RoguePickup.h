@@ -18,20 +18,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Components")
 	TObjectPtr<USphereComponent> SphereComponent;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Components")
-	TObjectPtr<UStaticMeshComponent> MeshComponent;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Sound")
-	TObjectPtr<USoundBase> PickupSound;
-	
 	UPROPERTY(EditDefaultsOnly, Category="Pickup")
-	float SphereRadius = 100.f;
+	float SphereRadius = 128.f;
 	
 	UFUNCTION()
-	void OnSphereOverlappedActor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	virtual void OnSphereOverlappedActor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	
-	UFUNCTION()
-	virtual void OnPickup(AActor* OverlappedActor);
 	
 public:	
 	

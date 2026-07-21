@@ -10,25 +10,12 @@
 
 ARoguePickup::ARoguePickup()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	SphereComponent->SetSphereRadius(SphereRadius);
 	RootComponent = SphereComponent;
 	SphereComponent->SetCollisionProfileName("Pickup");
-	
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComp"));
-	MeshComponent->SetupAttachment(SphereComponent);
-}
-
-void ARoguePickup::OnSphereOverlappedActor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	UGameplayStatics::PlaySoundAtLocation(this, PickupSound, GetActorLocation(), FRotator::ZeroRotator);
-	
-	OnPickup(OtherActor);
-	
-	Destroy();
 }
 
 void ARoguePickup::PostInitializeComponents()
@@ -38,7 +25,8 @@ void ARoguePickup::PostInitializeComponents()
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereOverlappedActor);
 }
 
-void ARoguePickup::OnPickup(AActor* OverlappedActor)
+void ARoguePickup::OnSphereOverlappedActor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// Add functionality on child pickup actor
 }
-
