@@ -49,7 +49,6 @@ void ARogueProjectileBlackhole::PostInitializeComponents()
 	
 	// Deactivate sounds before getting destroyed
 	OnDestroyed.AddDynamic(this, &ThisClass::HandleDestroyed);
-	
 }
 
 void ARogueProjectileBlackhole::OnSphereOverlappedActor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
