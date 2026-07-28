@@ -3,6 +3,7 @@
 
 #include "RogueAIController.h"
 
+#include "RogueGameTypes.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -18,7 +19,7 @@ void ARogueAIController::BeginPlay()
 	
 	RunBehaviorTree(BehaviorTree);
 	
-	FName TargetActor = FName("TargetActor");
+	FName TargetActor = FName(NAME_TargetActor);
 	
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	check(PlayerPawn);
