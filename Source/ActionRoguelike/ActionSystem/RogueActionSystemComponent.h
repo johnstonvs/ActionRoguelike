@@ -40,6 +40,10 @@ public:
 	UFUNCTION()
 	bool IsFullHealth();
 	
+	float GetHealth() const { return Attributes.Health; }
+	
+	float GetMaxHealth() const { return Attributes.MaxHealth; }
+	
 protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category="Attributes")

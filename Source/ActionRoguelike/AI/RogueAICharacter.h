@@ -6,12 +6,26 @@
 #include "GameFramework/Character.h"
 #include "RogueAICharacter.generated.h"
 
+class URogueActionSystemComponent;
+
 UCLASS()
 class ACTIONROGUELIKE_API ARogueAICharacter : public ACharacter
 {
 	GENERATED_BODY()
-
+	
 public:
+	
 	ARogueAICharacter();
 
+protected:
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<URogueActionSystemComponent> ActionSystemComponent;
+
+public:
+	
+	URogueActionSystemComponent* GetActionSystemComponent() { return ActionSystemComponent; }
+	
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 };

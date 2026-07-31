@@ -172,8 +172,7 @@ void ARoguePlayerCharacter::OnHealthChanged(float NewHealth, float OldHealth)
 	}
 }
 
-float ARoguePlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
-                                        class AController* EventInstigator, AActor* DamageCauser)
+float ARoguePlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	
