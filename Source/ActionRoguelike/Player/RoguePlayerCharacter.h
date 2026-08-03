@@ -7,8 +7,6 @@
 #include "RoguePlayerCharacter.generated.h"
 
 class URogueActionSystemComponent;
-class ARogueProjectile;
-class UNiagaraSystem;
 struct FInputActionInstance;
 struct FInputActionValue;
 class UInputAction;
@@ -27,30 +25,9 @@ public:
 	
 	
 protected:
-		
-	UPROPERTY(EditDefaultsOnly, Category="Attack")
-	TObjectPtr<UNiagaraSystem> CastingEffect;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Attack")
-	TObjectPtr<USoundBase> CastingSound;
-	
-	UPROPERTY(VisibleAnywhere, Category="Attack")
-	FName MuzzleSocketName;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Attack")
-	TObjectPtr<UAnimMontage> AttackMontage;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Death")
 	TObjectPtr<UAnimMontage> DeathMontage;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Attack|Magic")
-	TSubclassOf<ARogueProjectile> MagicProjectileClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Attack|Blackhole")
-	TSubclassOf<ARogueProjectile> BlackholeProjectileClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Attack|Blink")
-	TSubclassOf<ARogueProjectile> BlinkProjectileClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Move;
@@ -78,15 +55,12 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<URogueActionSystemComponent> ActionSystemComponent;
-
 	
 	void Move(const FInputActionValue& InValue);
 	
 	void Look(const FInputActionInstance& InValue);
 	
-	void StartProjectileAttack(TSubclassOf<ARogueProjectile> ProjectileClass);
-	
-	void AttackTimerElapsed(TSubclassOf<ARogueProjectile> ProjectileClass);
+	void StartAction(FName InActionName);
 	
 	UFUNCTION()
 	void OnHealthChanged(float NewHealth, float OldHealth);
