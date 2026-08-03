@@ -4,15 +4,51 @@
 #include "RogueAction.h"
 
 #include "RogueActionSystemComponent.h"
+#include "Engine/World.h"
 #include "Logging/StructuredLog.h"
 
 
-void URogueAction::StartAction()
+void URogueAction::StartAction_Implementation()
 {
-	float GameTime = 0.f;
+	bIsRunning = true;
+	
+	float GameTime = GetWorld()->TimeSeconds;
 	UE_LOGFMT(LogTemp, Log, "Started Action {ActionName} - {WorldTime}",
 		("ActionName", ActionName),
 		("WorldTime", GameTime));
+}
+
+void URogueAction::StopAction_Implementation()
+{
+	bIsRunning = false;
+	
+	float GameTime = GetWorld()->TimeSeconds;
+	UE_LOGFMT(LogTemp, Log, "Stopped Action {ActionName} - {WorldTime}",
+		("ActionName", ActionName),
+		("WorldTime", GameTime));
+	
+	CooldownUntil = GetWorld()->TimeSeconds + CooldownTime;
+}
+
+bool URogueAction::CanStart() const
+{
+	if (bIsRunning)
+	{
+		return false;
+	}
+	
+	if (GetCooldownTimeRemaining() > 0.f)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Cooldown remaining: %f"), GetCooldownTimeRemaining());
+		return false;
+	}
+	
+	return true;
+}
+
+float URogueAction::GetCooldownTimeRemaining() const
+{
+	return FMath::Max(0.f, CooldownUntil - GetWorld()->TimeSeconds);
 }
 
 URogueActionSystemComponent* URogueAction::GetOwningComponent() const

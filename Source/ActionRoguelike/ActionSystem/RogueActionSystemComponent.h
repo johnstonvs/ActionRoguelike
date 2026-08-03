@@ -35,6 +35,7 @@ class ACTIONROGUELIKE_API URogueActionSystemComponent : public UActorComponent
 public:
 	
 	void StartAction(FName InActionName);
+	void StopAction(FName InActionName);
 	
 	void ApplyHealthChange(float InValueChange);
 	

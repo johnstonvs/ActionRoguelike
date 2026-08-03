@@ -36,7 +36,24 @@ void URogueActionSystemComponent::StartAction(FName InActionName)
 	{
 		if (Action->GetActionName() == InActionName)
 		{
-			Action->StartAction();
+			if (Action->CanStart())
+			{
+				Action->StartAction();
+			}
+			
+			return;
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("No Action found with name %s"), *InActionName.ToString());
+}
+
+void URogueActionSystemComponent::StopAction(FName InActionName)
+{
+	for (URogueAction* Action : Actions)
+	{
+		if (Action->GetActionName() == InActionName)
+		{
+			Action->StopAction();
 			return;
 		}
 	}
