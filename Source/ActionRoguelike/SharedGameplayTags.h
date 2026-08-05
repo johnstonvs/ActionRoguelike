@@ -1,0 +1,12 @@
+﻿#pragma once
+#include "NativeGameplayTags.h"
+
+
+namespace SharedGameplayTags
+{
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_Sprint);
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_MagicAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_BlackholeAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_BlinkAttack);
+}
