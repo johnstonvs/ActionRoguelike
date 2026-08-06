@@ -71,6 +71,7 @@ protected:
 	UFUNCTION()
 	void OnHealthChanged(float NewHealth, float OldHealth);
 	
+	
 public:	
 	
 	URogueActionSystemComponent* GetActionSystemComponent() { return ActionSystemComponent; }

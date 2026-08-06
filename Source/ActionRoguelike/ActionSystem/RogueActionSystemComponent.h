@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "RogueActionSystemComponent.generated.h"
 
-struct FGameplayTag;
 class URogueAction;
 
 USTRUCT(BlueprintType)
@@ -53,6 +53,8 @@ public:
 	virtual void InitializeComponent() override;
 	
 	void GrantAction(TSubclassOf<URogueAction> NewActionClass);
+	
+	FGameplayTagContainer ActiveGameplayTags;
 	
 protected:
 	
