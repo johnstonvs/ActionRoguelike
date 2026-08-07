@@ -5,17 +5,36 @@
 
 #include "RogueAction.h"
 #include "GameplayTagContainer.h"
+#include "RogueAttributeSet.h"
 
 
 URogueActionSystemComponent::URogueActionSystemComponent()
 {
 	bWantsInitializeComponent = true;
+	
+	AttributeSetClass = URogueAttributeSet::StaticClass();
 }
 
 void URogueActionSystemComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
+	Attributes = NewObject<URogueAttributeSet>(this, AttributeSetClass);
+	
+	// For each Attribute within Attributes
+	for (TFieldIterator<FStructProperty> PropIt(Attributes->GetClass()); PropIt; ++PropIt)
+	{
+		// Get a pointer to the Attribute
+		FRogueAttribute* FoundAttribute = PropIt->ContainerPtrToValuePtr<FRogueAttribute>(Attributes);
+		
+		// Retrieve the respective GameplayTag
+		FName AttributeTagName = FName("Attribute." + PropIt->GetName());
+		FGameplayTag AttributeTag = FGameplayTag::RequestGameplayTag(AttributeTagName);
+		
+		// Add the Attribute to CachedAttributes with the GameplayTag as its key
+		CachedAttributes.Add(AttributeTag, FoundAttribute);
+	}
+	
 	for (TSubclassOf<URogueAction> ActionClass : DefaultActions)
 	{
 		if (ensure(ActionClass))
@@ -63,7 +82,7 @@ void URogueActionSystemComponent::StopAction(FGameplayTag InActionName)
 
 void URogueActionSystemComponent::ApplyHealthChange(float InValueChange)
 {
-	float OldHealth = Attributes.Health;
+	/*float OldHealth = Attributes.Health;
 	
 	Attributes.Health = FMath::Clamp(Attributes.Health + InValueChange, 0.f, Attributes.MaxHealth);
 
@@ -72,10 +91,17 @@ void URogueActionSystemComponent::ApplyHealthChange(float InValueChange)
 		OnHealthChanged.Broadcast(Attributes.Health, OldHealth);
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("New Health: %f, MaxHealth: %f"), Attributes.Health, Attributes.MaxHealth);
+	UE_LOG(LogTemp, Log, TEXT("New Health: %f, MaxHealth: %f"), Attributes.Health, Attributes.MaxHealth);*/
 }
 
 bool URogueActionSystemComponent::IsFullHealth()
 {
-	return FMath::IsNearlyEqual(Attributes.Health, Attributes.MaxHealth);
+	return true; //FMath::IsNearlyEqual(Attributes.Health, Attributes.MaxHealth);
+}
+
+FRogueAttribute* URogueActionSystemComponent::GetAttribute(FGameplayTag InAttributeTag)
+{
+	FRogueAttribute** FoundAttribute = CachedAttributes.Find(InAttributeTag);
+	
+	return *FoundAttribute;
 }
