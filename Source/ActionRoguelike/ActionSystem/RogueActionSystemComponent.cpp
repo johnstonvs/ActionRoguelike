@@ -6,6 +6,7 @@
 #include "RogueAction.h"
 #include "GameplayTagContainer.h"
 #include "RogueAttributeSet.h"
+#include "Logging/StructuredLog.h"
 
 
 URogueActionSystemComponent::URogueActionSystemComponent()
@@ -80,23 +81,34 @@ void URogueActionSystemComponent::StopAction(FGameplayTag InActionName)
 	UE_LOG(LogTemp, Warning, TEXT("No Action found with name %s"), *InActionName.ToString());
 }
 
-void URogueActionSystemComponent::ApplyHealthChange(float InValueChange)
+void URogueActionSystemComponent::ApplyAttributeChange(FGameplayTag AttributeTag, float Delta, EAttributeModifyType ModifyType)
 {
-	/*float OldHealth = Attributes.Health;
+	FRogueAttribute* FoundAttribute = GetAttribute(AttributeTag);
+	check(FoundAttribute);
 	
-	Attributes.Health = FMath::Clamp(Attributes.Health + InValueChange, 0.f, Attributes.MaxHealth);
-
-	if (!FMath::IsNearlyEqual(OldHealth, Attributes.Health))
+	float OldValue = FoundAttribute->GetValue();
+	
+	switch (ModifyType)
 	{
-		OnHealthChanged.Broadcast(Attributes.Health, OldHealth);
+	case Base:
+		FoundAttribute->Base += Delta;
+		break;
+	case Modifier:
+		FoundAttribute->Modifier += Delta;
+		break;
+	case OverrideBase:
+		FoundAttribute->Base = Delta;
+		break;
+	default:
+		check(false);
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("New Health: %f, MaxHealth: %f"), Attributes.Health, Attributes.MaxHealth);*/
-}
-
-bool URogueActionSystemComponent::IsFullHealth()
-{
-	return true; //FMath::IsNearlyEqual(Attributes.Health, Attributes.MaxHealth);
+	
+	Attributes->PostAttributeChanged();
+	
+	UE_LOGFMT(LogTemp, Log, "Attribute: {0}, New: {1}, Old: {2}",
+		AttributeTag.ToString(),
+		FoundAttribute->GetValue(),
+		OldValue);
 }
 
 FRogueAttribute* URogueActionSystemComponent::GetAttribute(FGameplayTag InAttributeTag)

@@ -4,8 +4,10 @@
 
 namespace SharedGameplayTags
 {
-	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_Sprint);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attribute_Health);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attribute_HealthMax);
 	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_Sprint);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_MagicAttack);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_BlackholeAttack);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_BlinkAttack);

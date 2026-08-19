@@ -3,8 +3,10 @@
 
 #include "RoguePickupHealth.h"
 
+#include "SharedGameplayTags.h"
 #include "ActionSystem/RogueActionSystemComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Core/RogueGameplayStatics.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -25,9 +27,9 @@ void ARoguePickupHealth::OnSphereOverlappedActor(UPrimitiveComponent* Overlapped
 	
 	// Assert if null, then we misconfigured what we can overlap with, any Pawn should have an action component
 	// Skip pickup if already at full health
-	if (ensure(ActionComp != nullptr) && !ActionComp->IsFullHealth())
+	if (ensure(ActionComp != nullptr) && !URogueGameplayStatics::IsFullHealth(ActionComp))
 	{
-		ActionComp->ApplyHealthChange(HealthToGive);
+		ActionComp->ApplyAttributeChange(SharedGameplayTags::Attribute_Health, HealthToGive, Base);
 		
 		UGameplayStatics::PlaySoundAtLocation(this, PickupSound, GetActorLocation(), FRotator::ZeroRotator);
 	
