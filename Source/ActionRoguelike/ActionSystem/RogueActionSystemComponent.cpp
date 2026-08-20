@@ -46,6 +46,13 @@ void URogueActionSystemComponent::InitializeComponent()
 	}
 }
 
+void URogueActionSystemComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	Attributes->InitializeAttributes();
+}
+
 void URogueActionSystemComponent::GrantAction(TSubclassOf<URogueAction> NewActionClass)
 {
 		URogueAction* NewAction = NewObject<URogueAction>(this, NewActionClass);
