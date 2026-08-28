@@ -17,6 +17,15 @@ void URogueAction::StartAction_Implementation()
 		("ActionName", ActionName.ToString()),
 		("WorldTime", GameTime));
 	
+	// If action has attributes to be consumed, consume attributes
+	if (!AttributesToConsume.IsEmpty())
+	{
+		for (TTuple<FGameplayTag, float> AttributeToBeConsumed : AttributesToConsume)
+		{
+			GetOwningComponent()->ApplyAttributeChange(AttributeToBeConsumed.Key, -(AttributeToBeConsumed.Value), Base);
+		}
+	}
+	
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantTags);
 }
 
@@ -50,6 +59,18 @@ bool URogueAction::CanStart() const
 	if (GetOwningComponent()->ActiveGameplayTags.HasAny(BlockedTags))
 	{
 		return false;
+	}
+	
+	// If attribute to consume amount is lower than required, return false
+	if (!AttributesToConsume.IsEmpty())
+	{
+		for (TTuple<FGameplayTag, float> AttributeToBeConsumed : AttributesToConsume)
+		{
+			if (GetOwningComponent()->GetAttributeValue(AttributeToBeConsumed.Key) < AttributeToBeConsumed.Value)
+			{
+				return false;
+			}
+		}
 	}
 	
 	return true;

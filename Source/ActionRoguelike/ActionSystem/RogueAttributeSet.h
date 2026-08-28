@@ -81,6 +81,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="Attributes")
 	FRogueAttribute MoveSpeed;
 	
+	UPROPERTY(EditAnywhere, Category="Attributes")
+	FRogueAttribute MoveSpeedMultiplier;
+	
 	URoguePawnAttributeSet();
 };
 
@@ -91,7 +94,16 @@ class URoguePlayerAttributeSet : public URoguePawnAttributeSet
 	
 public:
 	
+	virtual void PostAttributeChanged() override; 
 	
+	// Rage - gained by taking damage, consumed to perform powerful actions
+	UPROPERTY(EditAnywhere, Category="Attributes")
+	FRogueAttribute Rage;
+	
+	UPROPERTY(EditAnywhere, Category="Attributes")
+	FRogueAttribute RageMax;
+	
+	URoguePlayerAttributeSet();
 };
 
 

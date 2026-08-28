@@ -26,6 +26,9 @@ protected:
 	FGameplayTagContainer BlockedTags;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
+	TMap<FGameplayTag, float> AttributesToConsume;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	float CooldownTime = 0.f;
 	
 public:

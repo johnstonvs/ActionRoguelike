@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "RogueAttributeSet.h"
 #include "SharedGameplayTags.h"
+#include "GameFramework/Actor.h"
 #include "Logging/StructuredLog.h"
 
 
@@ -121,9 +122,18 @@ void URogueActionSystemComponent::ApplyAttributeChange(FGameplayTag AttributeTag
 	// Blueprint listeners
 	if (TArray<FOnAttributeDynamicChanged>* Events = AttributeDynamicListeners.Find(AttributeTag))
 	{
-		for (FOnAttributeDynamicChanged& Event : *Events)
+		// For each event in reverse order
+		for (int i = Events->Num() - 1; i >= 0; --i)
 		{
-			Event.Execute(AttributeTag, FoundAttribute->GetValue(), OldValue);
+			FOnAttributeDynamicChanged& Event = (*Events)[i];
+			bool bIsBound = Event.ExecuteIfBound(AttributeTag, FoundAttribute->GetValue(), OldValue);
+			// If event is not bound
+			if (!bIsBound)
+			{
+				// Remove the event
+				Events->RemoveAt(i);
+				UE_LOG(LogTemp, Log, TEXT("Cleaned up expired attribute delegate for %s"), *GetNameSafe(GetOwner()));
+			}
 		}
 	}
 	
@@ -157,4 +167,16 @@ void URogueActionSystemComponent::AddDynamicAttributeListener(FOnAttributeDynami
 {
 	TArray<FOnAttributeDynamicChanged>& Events = AttributeDynamicListeners.FindOrAdd(AttributeTag);
 	Events.Add(Event);
+}
+
+void URogueActionSystemComponent::RemoveDynamicAttributeListener(FOnAttributeDynamicChanged Event)
+{
+	for (TTuple<FGameplayTag, TArray<FOnAttributeDynamicChanged>>& Listener : AttributeDynamicListeners)
+	{
+		if (Listener.Value.RemoveSingle(Event) > 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Successfully removed blueprint binding."));
+			break;
+		}
+	}
 }
