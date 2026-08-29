@@ -18,15 +18,15 @@ void URogueAction::StartAction_Implementation()
 		("WorldTime", GameTime));
 	
 	// If action has attributes to be consumed, consume attributes
-	if (!AttributesToConsume.IsEmpty())
+	if (!AttributesCost.IsEmpty())
 	{
-		for (TTuple<FGameplayTag, float> AttributeToBeConsumed : AttributesToConsume)
+		for (TPair<FGameplayTag, float> Cost : AttributesCost)
 		{
-			GetOwningComponent()->ApplyAttributeChange(AttributeToBeConsumed.Key, -(AttributeToBeConsumed.Value), Base);
+			OwningComp->ApplyAttributeChange(Cost.Key, -(Cost.Value), Base);
 		}
 	}
 	
-	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantTags);
+	OwningComp->ActiveGameplayTags.AppendTags(GrantTags);
 }
 
 void URogueAction::StopAction_Implementation()
@@ -40,11 +40,12 @@ void URogueAction::StopAction_Implementation()
 	
 	CooldownUntil = GetWorld()->TimeSeconds + CooldownTime;
 	
-	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantTags);
+	OwningComp->ActiveGameplayTags.RemoveTags(GrantTags);
 }
 
 bool URogueAction::CanStart() const
 {
+	
 	if (IsRunning())
 	{
 		return false;
@@ -56,18 +57,25 @@ bool URogueAction::CanStart() const
 		return false;
 	}
 	
-	if (GetOwningComponent()->ActiveGameplayTags.HasAny(BlockedTags))
+	if (OwningComp->ActiveGameplayTags.HasAny(BlockedTags))
 	{
 		return false;
 	}
 	
-	// If attribute to consume amount is lower than required, return false
-	if (!AttributesToConsume.IsEmpty())
+	// If attribute cost value is lower than required, return false
+	if (!AttributesCost.IsEmpty())
 	{
-		for (TTuple<FGameplayTag, float> AttributeToBeConsumed : AttributesToConsume)
+		for (TPair<FGameplayTag, float> Cost : AttributesCost)
 		{
-			if (GetOwningComponent()->GetAttributeValue(AttributeToBeConsumed.Key) < AttributeToBeConsumed.Value)
+			if (OwningComp->GetAttributeValue(Cost.Key) < Cost.Value)
 			{
+				// Not enough resources
+				UE_LOGFMT(LogTemp, Log, "Not enough {AttributeName} to activate {ActionName}. "
+										"Have {Available} and need {Required}.",
+										("AttributeName", Cost.Key.ToString()),
+										("ActionName", ActionName.ToString()),
+										("Available", OwningComp->GetAttributeValue(Cost.Key)),
+										("Required", Cost.Value));
 				return false;
 			}
 		}

@@ -26,7 +26,7 @@ protected:
 	FGameplayTagContainer BlockedTags;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
-	TMap<FGameplayTag, float> AttributesToConsume;
+	TMap<FGameplayTag, float> AttributesCost;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	float CooldownTime = 0.f;
@@ -35,6 +35,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	URogueActionSystemComponent* GetOwningComponent() const;
+	
+	UPROPERTY()
+	URogueActionSystemComponent* OwningComp = GetOwningComponent();
 	
 	bool CanStart() const;
 	
