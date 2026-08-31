@@ -32,7 +32,7 @@ struct FRogueAttribute
 };
 
 
-UCLASS()
+UCLASS(EditInlineNew)
 class ACTIONROGUELIKE_API URogueAttributeSet : public UObject
 {
 	GENERATED_BODY()
@@ -53,10 +53,10 @@ class URogueHealthAttributeSet : public URogueAttributeSet
 
 public:
 	
-	UPROPERTY(EditAnywhere, Category="Attributes")
+	UPROPERTY(EditAnywhere, Category="Health")
 	FRogueAttribute Health;
 	
-	UPROPERTY(EditAnywhere, Category="Attributes")
+	UPROPERTY(EditAnywhere, Category="Health")
 	FRogueAttribute HealthMax;
 	
 	virtual void PostAttributeChanged() override; 
@@ -78,10 +78,10 @@ public:
 	void ApplyMoveSpeed();
 	
 	// Walking speed directly linked with Character Movement Component
-	UPROPERTY(EditAnywhere, Category="Attributes")
+	UPROPERTY(EditAnywhere, Category="MoveSpeed")
 	FRogueAttribute MoveSpeed;
 	
-	UPROPERTY(EditAnywhere, Category="Attributes")
+	UPROPERTY(EditAnywhere, Category="MoveSpeed")
 	FRogueAttribute MoveSpeedMultiplier;
 	
 	URoguePawnAttributeSet();
@@ -97,10 +97,10 @@ public:
 	virtual void PostAttributeChanged() override; 
 	
 	// Rage - gained by taking damage, consumed to perform powerful actions
-	UPROPERTY(EditAnywhere, Category="Attributes")
+	UPROPERTY(EditAnywhere, Category="Resources")
 	FRogueAttribute Rage;
 	
-	UPROPERTY(EditAnywhere, Category="Attributes")
+	UPROPERTY(EditAnywhere, Category="Resources")
 	FRogueAttribute RageMax;
 	
 	URoguePlayerAttributeSet();
