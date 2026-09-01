@@ -15,4 +15,6 @@ namespace SharedGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_MagicAttack);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_BlackholeAttack);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Action_BlinkAttack);
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(StatusEffect_Sprinting);
 }

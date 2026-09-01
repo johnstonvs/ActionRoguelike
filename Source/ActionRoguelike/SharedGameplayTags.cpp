@@ -14,4 +14,6 @@ namespace SharedGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Action_MagicAttack, "Action.MagicAttack");
 	UE_DEFINE_GAMEPLAY_TAG(Action_BlackholeAttack, "Action.BlackholeAttack");
 	UE_DEFINE_GAMEPLAY_TAG(Action_BlinkAttack, "Action.BlinkAttack");
+	
+	UE_DEFINE_GAMEPLAY_TAG(StatusEffect_Sprinting, "StatusEffect.Sprinting");
 }
