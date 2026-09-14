@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "GameplayTagContainer.h"
 #include "SharedGameplayTags.h"
+#include "TimerManager.h"
 #include "ActionSystem/RogueActionSystemComponent.h"
 #include "ActionSystem/RogueAttributeSet.h"
 #include "Camera/CameraComponent.h"
@@ -32,6 +33,8 @@ ARoguePlayerCharacter::ARoguePlayerCharacter()
 void ARoguePlayerCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	
+	GetMesh()->SetOverlayMaterialMaxDrawDistance(1);
 	
 	//ActionSystemComponent->OnHealthChanged.AddDynamic(this, &ThisClass::OnHealthChanged);
 	FOnAttributeChanged& Event = ActionSystemComponent->GetAttributeListener(SharedGameplayTags::Attribute_Health);
@@ -116,6 +119,16 @@ float ARoguePlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent 
 	// (Could expose as a general ratio or as an Attribute that can be improved throughout gameplay)
 	const float RageToAdd = DamageAmount * 0.75f;
 	ActionSystemComponent->ApplyAttributeChange(SharedGameplayTags::Attribute_Rage, RageToAdd, Base);
+	
+	GetMesh()->SetOverlayMaterialMaxDrawDistance(0);
+	
+	//GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+	GetMesh()->SetCustomPrimitiveDataFloat(0, GetWorld()->TimeSeconds);
+	
+	GetWorldTimerManager().SetTimer(OverlayTimerHandle, [this]()
+	{
+		GetMesh()->SetOverlayMaterialMaxDrawDistance(1);
+	}, 1.0f, false);
 	
 	return ActualDamage;
 }

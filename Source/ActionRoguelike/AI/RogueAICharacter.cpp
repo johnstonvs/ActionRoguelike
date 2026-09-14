@@ -5,8 +5,10 @@
 
 #include "DiffResults.h"
 #include "SharedGameplayTags.h"
+#include "TimerManager.h"
 #include "ActionSystem/RogueActionSystemComponent.h"
 #include "ActionSystem/RogueAttributeSet.h"
+#include "Components/SkeletalMeshComponent.h"
 
 
 ARogueAICharacter::ARogueAICharacter()
@@ -20,6 +22,15 @@ float ARogueAICharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	
 	ActionSystemComponent->ApplyAttributeChange(SharedGameplayTags::Attribute_Health, -ActualDamage, Base);
+	GetMesh()->SetOverlayMaterialMaxDrawDistance(0);
+	
+	//GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+	GetMesh()->SetCustomPrimitiveDataFloat(0, GetWorld()->TimeSeconds);
+	
+	GetWorldTimerManager().SetTimer(OverlayTimerHandle, [this]()
+{
+	GetMesh()->SetOverlayMaterialMaxDrawDistance(1);
+}, 1.0f, false);
 	
 	return ActualDamage;
 }
