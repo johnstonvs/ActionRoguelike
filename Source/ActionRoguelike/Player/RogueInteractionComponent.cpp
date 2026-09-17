@@ -19,7 +19,6 @@ URogueInteractionComponent::URogueInteractionComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
 void URogueInteractionComponent::Interact()
 {
 	/*IRogueInteractionInterface* InteractInterface = Cast<IRogueInteractionInterface>(SelectedActor);
@@ -28,10 +27,11 @@ void URogueInteractionComponent::Interact()
 		InteractInterface->Interact();
 	}*/
 	
-	if (!SelectedActor) return;
-	IRogueInteractionInterface::Execute_Interact(SelectedActor);
+	if (SelectedActor)
+	{
+		IRogueInteractionInterface::Execute_Interact(SelectedActor);
+	}
 }
-
 
 void URogueInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
