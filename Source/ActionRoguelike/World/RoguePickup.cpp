@@ -13,6 +13,7 @@ ARoguePickup::ARoguePickup()
 	PrimaryActorTick.bCanEverTick = false;
 	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
+	SphereComponent->SetCollisionProfileName("OverlapOnlyPawn");
 	SphereComponent->SetSphereRadius(SphereRadius);
 	RootComponent = SphereComponent;
 	SphereComponent->SetCollisionProfileName("Pickup");
