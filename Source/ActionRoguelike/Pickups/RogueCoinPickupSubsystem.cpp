@@ -7,31 +7,54 @@
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
 #include "Components/InstancedStaticMeshComponent.h"
+#include "Core/RogueDeveloperSettings.h"
+#include "Engine/StaticMesh.h"
 #include "Player/RoguePlayerCharacter.h"
 
-void URogueCoinPickupSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+
+void URogueCoinPickupSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
-	Super::Initialize(Collection);
+	Super::OnWorldBeginPlay(InWorld);
 	
 	UWorld* World = GetWorld();
 	
 	WorldISM = NewObject<UInstancedStaticMeshComponent>(World, NAME_None, RF_Transient);
 	WorldISM->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WorldISM->RegisterComponentWithWorld(World);
+	
+	FLoadSoftObjectPathAsyncDelegate Delegate;
+	Delegate.BindUObject(this, &ThisClass::OnPickupMeshLoadComplete);
+	GetDefault<URogueDeveloperSettings>()->CoinPickupMesh.LoadAsync(Delegate);
+}
+
+void URogueCoinPickupSubsystem::OnPickupMeshLoadComplete(const FSoftObjectPath& SoftObjectPath, UObject* LoadedObject)
+{
+	WorldISM->SetStaticMesh(Cast<UStaticMesh>(LoadedObject));
 }
 
 void URogueCoinPickupSubsystem::AddCoinPickups(TArray<FVector> NewLocations, TArray<int32> NewAmounts)
 {
-	
-	
 	CoinLocations.Append(NewLocations);
 	CoinAmounts.Append(NewAmounts);
+	
+	TArray<FTransform> MeshTransforms;
+	for (int i = 0; i < NewLocations.Num(); ++i)
+	{
+		MeshTransforms.Add(FTransform(NewLocations[i] + FVector(0, 0, 50.f)));
+	}
+	
+	TArray<FPrimitiveInstanceId> NewMeshIDs = WorldISM->AddInstancesById(MeshTransforms, true, false);
+	
+	MeshIDs.Append(NewMeshIDs);
 }
 
 void URogueCoinPickupSubsystem::RemoveCoinPickup(int32 IndexToRemove)
 {
 	CoinLocations.RemoveAt(IndexToRemove);
 	CoinAmounts.RemoveAt(IndexToRemove);
+	
+	WorldISM->RemoveInstanceById(MeshIDs[IndexToRemove]);
+	MeshIDs.RemoveAt(IndexToRemove);
 }
 
 void URogueCoinPickupSubsystem::Tick(float DeltaTime)

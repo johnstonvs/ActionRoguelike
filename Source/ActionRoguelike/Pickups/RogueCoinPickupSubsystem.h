@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InstanceDataTypes.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "RogueCoinPickupSubsystem.generated.h"
 
@@ -25,13 +26,16 @@ public:
 	
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(RogueCoinPickupSubsystem, STATGROUP_Tickables) };
 	
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	
 protected:
+	
+	void OnPickupMeshLoadComplete(const FSoftObjectPath& SoftObjectPath, UObject* LoadedObject);
 	
 	UPROPERTY()
 	TObjectPtr<UInstancedStaticMeshComponent> WorldISM;
 	
 	TArray<FVector> CoinLocations;
 	TArray<int32> CoinAmounts;
+	TArray<FPrimitiveInstanceId> MeshIDs;
 };
