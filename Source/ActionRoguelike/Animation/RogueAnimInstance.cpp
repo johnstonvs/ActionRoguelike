@@ -20,6 +20,8 @@ void URogueAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	
 	if (ActionComp)
 	{
+		// @TODO: Update to use delegates from action system.
 		bIsSprinting = ActionComp->ActiveGameplayTags.HasTag(SharedGameplayTags::StatusEffect_Sprinting);
+		bIsStunned = ActionComp->ActiveGameplayTags.HasTag(SharedGameplayTags::StatusEffect_Stunned);
 	}
 }

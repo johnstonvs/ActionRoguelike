@@ -6,6 +6,7 @@
 #include "ActionRoguelike.h"
 #include "RogueAction.h"
 #include "GameplayTagContainer.h"
+#include "RogueActionEffect.h"
 #include "RogueAttributeSet.h"
 #include "SharedGameplayTags.h"
 #include "GameFramework/Actor.h"
@@ -70,8 +71,22 @@ void URogueActionSystemComponent::BeginPlay()
 
 void URogueActionSystemComponent::GrantAction(TSubclassOf<URogueAction> NewActionClass)
 {
-		URogueAction* NewAction = NewObject<URogueAction>(this, NewActionClass);
-    	Actions.Add(NewAction);
+	URogueAction* NewAction = NewObject<URogueAction>(this, NewActionClass);
+	Actions.Add(NewAction);
+	
+	if (NewAction->IsA(URogueActionEffect::StaticClass()))
+	{
+		// Sanity check that buffs are allowed to run. We don't handle this case yet.
+		ensureMsgf(NewAction->CanStart(), TEXT("Effect CanStart returns false, cannot start. Case not handled."));
+		
+		NewAction->StartAction();
+	}
+}
+
+void URogueActionSystemComponent::RemoveAction(URogueAction* ActionToRemove)
+{
+	int32 RemoveCount = Actions.RemoveSingle(ActionToRemove);
+	ensure(RemoveCount == 1);
 }
 
 void URogueActionSystemComponent::StartAction(FGameplayTag InActionName)

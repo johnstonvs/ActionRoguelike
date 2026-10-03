@@ -16,4 +16,5 @@ namespace SharedGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Action_BlinkAttack, "Action.BlinkAttack");
 	
 	UE_DEFINE_GAMEPLAY_TAG(StatusEffect_Sprinting, "StatusEffect.Sprinting");
+	UE_DEFINE_GAMEPLAY_TAG(StatusEffect_Stunned, "StatusEffect.Stunned");
 }
