@@ -11,12 +11,7 @@
 
 void URogueAction::StartAction_Implementation()
 {
-	bIsRunning = true;
-	
-	float GameTime = GetWorld()->TimeSeconds;
-	UE_LOGFMT(LogGame, Log, "Started Action {ActionName} - {WorldTime}",
-		("ActionName", ActionName.ToString()),
-		("WorldTime", GameTime));
+	OwningComp->AppendActiveTags(GrantTags);
 	
 	// If action has attributes to be consumed, consume attributes
 	if (!AttributesCost.IsEmpty())
@@ -27,7 +22,12 @@ void URogueAction::StartAction_Implementation()
 		}
 	}
 	
-	OwningComp->ActiveGameplayTags.AppendTags(GrantTags);
+	bIsRunning = true;
+	
+	float GameTime = GetWorld()->TimeSeconds;
+	UE_LOGFMT(LogGame, Log, "Started Action {ActionName} - {WorldTime}",
+		("ActionName", ActionName.ToString()),
+		("WorldTime", GameTime));
 }
 
 void URogueAction::StopAction_Implementation()
@@ -41,7 +41,7 @@ void URogueAction::StopAction_Implementation()
 	
 	CooldownUntil = GetWorld()->TimeSeconds + CooldownTime;
 	
-	OwningComp->ActiveGameplayTags.RemoveTags(GrantTags);
+	OwningComp->RemoveActiveTags(GrantTags);
 }
 
 bool URogueAction::CanStart() const
@@ -58,7 +58,7 @@ bool URogueAction::CanStart() const
 		return false;
 	}
 	
-	if (OwningComp->ActiveGameplayTags.HasAny(BlockedTags))
+	if (OwningComp->GetActiveTags().HasAny(BlockedTags))
 	{
 		return false;
 	}

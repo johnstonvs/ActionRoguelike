@@ -12,16 +12,26 @@ void URogueAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 	
 	ActionComp = GetOwningActor()->FindComponentByClass<URogueActionSystemComponent>();
+	
 }
 
-void URogueAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+void URogueAnimInstance::NativeBeginPlay()
 {
-	Super::NativeUpdateAnimation(DeltaSeconds);
+	Super::NativeBeginPlay();
 	
-	if (ActionComp)
+	ActionComp->GameplayTagUpdated.AddDynamic(this, &ThisClass::OnTagUpdated);
+}
+
+void URogueAnimInstance::OnTagUpdated(FGameplayTag UpdatedTag, int32 NewCount)
+{
+	bool bWasAdded = NewCount > 0;
+	
+	if (UpdatedTag.MatchesTag(SharedGameplayTags::StatusEffect_Sprinting))
 	{
-		// @TODO: Update to use delegates from action system.
-		bIsSprinting = ActionComp->ActiveGameplayTags.HasTag(SharedGameplayTags::StatusEffect_Sprinting);
-		bIsStunned = ActionComp->ActiveGameplayTags.HasTag(SharedGameplayTags::StatusEffect_Stunned);
+		bIsSprinting = bWasAdded;
+	}
+	else if (UpdatedTag.MatchesTag(SharedGameplayTags::StatusEffect_Stunned))
+	{
+		bIsStunned = bWasAdded;
 	}
 }

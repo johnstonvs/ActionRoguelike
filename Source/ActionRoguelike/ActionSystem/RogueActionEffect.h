@@ -20,9 +20,29 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Effect")
 	float Duration = 0.f;
 	
+	// Time between 'ticks' to apply effect
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Effect")
+	float Period = 0.f;
+	
+	/* Adding the same Effect multiple times instead increases the stack size. Can be used to aomplify effects.
+	 * Resets effect duration unless bResetDurationOnStackIncrease is false */
+	UPROPERTY(Transient, BlueprintReadOnly, Category="Effect")
+	int32 StackCount = 1;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Effect")
+	bool bResetDurationOnStackIncrease = true;
+	
 	FTimerHandle DurationHandle;
+	FTimerHandle PeriodHandle;
+	
+	UFUNCTION(BlueprintNativeEvent, Category="Effect")
+	void ExecutePeriodicEffect();
+	
+	void ResetDuration();
 	
 public:
+	
+	void IncrementStackSize();
 	
 	virtual void StartAction_Implementation() override;
 	

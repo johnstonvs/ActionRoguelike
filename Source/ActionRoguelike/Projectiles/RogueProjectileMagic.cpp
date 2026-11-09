@@ -4,6 +4,8 @@
 #include "RogueProjectileMagic.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "ActionSystem/RogueActionSystemComponent.h"
+#include "ActionSystem/RogueActionEffect.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -19,9 +21,19 @@ ARogueProjectileMagic::ARogueProjectileMagic()
 
 void ARogueProjectileMagic::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	FVector HitFromDirection = GetActorRotation().Vector();
-	UGameplayStatics::ApplyPointDamage(OtherActor, 10.f, HitFromDirection, Hit, GetInstigatorController(), this, DmgTypeClass);
-	
 	// Keep base implementation, damage applied before projectile is destroyed
 	Super::OnActorHit(HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
+	
+	FVector HitFromDirection = GetActorRotation().Vector();
+	
+	UGameplayStatics::ApplyPointDamage(OtherActor, 10.f, HitFromDirection, Hit, GetInstigatorController(), this, DmgTypeClass);
+	
+	if (EffectOnHit)
+	{
+		URogueActionSystemComponent* ActionComp = OtherActor->FindComponentByClass<URogueActionSystemComponent>();
+		if (ActionComp) // Not everything has one
+		{
+			ActionComp->GrantAction(EffectOnHit);
+		}
+	}
 }

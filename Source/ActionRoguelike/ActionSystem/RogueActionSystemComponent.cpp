@@ -71,10 +71,25 @@ void URogueActionSystemComponent::BeginPlay()
 
 void URogueActionSystemComponent::GrantAction(TSubclassOf<URogueAction> NewActionClass)
 {
+	const bool bIsEffectClass = NewActionClass->IsChildOf(URogueActionEffect::StaticClass());
+	if (bIsEffectClass)
+	{
+		// Find existing debuff by class, you could have different 'stacking behavior', for example allowing one debuff class PER instigator
+		// Note: Buffs and Actions may desire their own individual arrays when expanding on the Action System
+		for (URogueAction* Action : Actions)
+		{
+			if (URogueActionEffect* Effect = Cast<URogueActionEffect>(Action))
+			{
+				Effect->IncrementStackSize();
+				return;
+			}
+		}
+	}
+	
 	URogueAction* NewAction = NewObject<URogueAction>(this, NewActionClass);
 	Actions.Add(NewAction);
 	
-	if (NewAction->IsA(URogueActionEffect::StaticClass()))
+	if (bIsEffectClass)
 	{
 		// Sanity check that buffs are allowed to run. We don't handle this case yet.
 		ensureMsgf(NewAction->CanStart(), TEXT("Effect CanStart returns false, cannot start. Case not handled."));
@@ -87,6 +102,48 @@ void URogueActionSystemComponent::RemoveAction(URogueAction* ActionToRemove)
 {
 	int32 RemoveCount = Actions.RemoveSingle(ActionToRemove);
 	ensure(RemoveCount == 1);
+}
+
+void URogueActionSystemComponent::AppendActiveTags(FGameplayTagContainer NewTags)
+{
+	ActiveGameplayTags.AppendTags(NewTags);
+	
+	CheckAgainstBlockedTags(NewTags);
+
+	for (FGameplayTag Tag : NewTags)
+	{
+		GameplayTagUpdated.Broadcast(Tag, 1);
+	}
+}
+
+void URogueActionSystemComponent::RemoveActiveTags(FGameplayTagContainer TagsToRemove)
+{
+	int32 PrevCount = ActiveGameplayTags.Num();
+	
+	ActiveGameplayTags.RemoveTags(TagsToRemove);
+	
+	ensure((PrevCount - ActiveGameplayTags.Num()) == TagsToRemove.Num());
+	
+	for (FGameplayTag Tag : TagsToRemove)
+	{
+		GameplayTagUpdated.Broadcast(Tag, 0);
+	}
+}
+
+void URogueActionSystemComponent::CheckAgainstBlockedTags(const FGameplayTagContainer& NewTags)
+{
+	for (URogueAction* Action : Actions)
+	{
+		if (Action->IsRunning() && NewTags.HasAny(Action->GetBlockedTags()))
+		{
+			Action->StopAction();
+			
+			UE_LOGFMT(LogGame, Log, "Stopped {ActionName} due to any matching blocked tag {BlockedTags} for {Owner}",
+				("ActionName", Action->GetActionName().ToString()),
+				("BlockedTags", NewTags.ToString()),
+				("Owner", GetNameSafe(GetOwner())));
+		}
+	}
 }
 
 void URogueActionSystemComponent::StartAction(FGameplayTag InActionName)

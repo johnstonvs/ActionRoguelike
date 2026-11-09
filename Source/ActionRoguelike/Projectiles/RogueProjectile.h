@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "RogueProjectile.generated.h"
 
+class URogueActionEffect;
 class UAudioComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
